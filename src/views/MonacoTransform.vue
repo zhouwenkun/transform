@@ -1,7 +1,9 @@
 <script setup>
 //import $ from 'jquery'
 
-import { ref, onMounted, getCurrentInstance } from 'vue'
+import { ref, onMounted, getCurrentInstance, watch, watchPostEffect, watchSyncEffect } from 'vue'
+import { useWindowSize } from '@vueuse/core'
+
 import { generate } from 'escodegen'
 import { parseScript, Syntax } from 'esprima'
 
@@ -29,6 +31,8 @@ self.MonacoEnvironment = {
     return new editorWorker()
   }
 }
+
+const { width } = useWindowSize()
 
 let a, b
 const options = { comment: true }
@@ -76,6 +80,12 @@ onMounted(() => {
     a = monaco.editor.create($('div.container > div:first-child').get(0), options)
     b = monaco.editor.create($('div.container > div:last-child')[0], options)
 })
+
+watch(width, () => {
+    console.log('width:', width.value)
+    a.layout()
+    b.layout()
+})
 </script>
 
 <template>
@@ -97,6 +107,8 @@ onMounted(() => {
     .container > div:first-child,
     .container > div:last-child {
         flex: 1;
+        margin: 8px;
+        border: 1px solid lightgray;
     }
     .container > div:nth-child(2) {
         width: 200px;
