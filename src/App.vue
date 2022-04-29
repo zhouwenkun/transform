@@ -3,15 +3,20 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import HelloWorld from './components/HelloWorld.vue'
 import Transform from './views/Transform.vue'
+import MonacoTransformVue from './views/MonacoTransform.vue'
 </script>
 
 <template>
   <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
   <!-- <HelloWorld msg="Hello Vue 3 + Vite" /> -->
-  <Transform />
+  <MonacoTransformVue />
 </template>
 
 <style>
+  body {
+    margin: 0;
+  }
+/*
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -20,4 +25,5 @@ import Transform from './views/Transform.vue'
   color: #2c3e50;
   margin-top: 60px;
 }
+*/
 </style>

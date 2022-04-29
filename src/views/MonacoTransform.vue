@@ -1,11 +1,34 @@
 <script setup>
-import { ref, onMounted, watch, getCurrentInstance } from 'vue'
+//import $ from 'jquery'
+
+import { ref, onMounted, getCurrentInstance } from 'vue'
 import { generate } from 'escodegen'
 import { parseScript, Syntax } from 'esprima'
-import { fromTextArea } from 'codemirror'
 
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/javascript/javascript.js'
+import * as monaco from 'monaco-editor'
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
+import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+
+self.MonacoEnvironment = {
+  getWorker(_, label) {
+    if (label === 'json') {
+      return new jsonWorker()
+    }
+    if (label === 'css' || label === 'scss' || label === 'less') {
+      return new cssWorker()
+    }
+    if (label === 'html' || label === 'handlebars' || label === 'razor') {
+      return new htmlWorker()
+    }
+    if (label === 'typescript' || label === 'javascript') {
+      return new tsWorker()
+    }
+    return new editorWorker()
+  }
+}
 
 let a, b
 const options = { comment: true }
@@ -42,62 +65,42 @@ const click = () => {
 
 onMounted(() => {
     console.log('onMounted...')
-
+    
     let options = {
         lineNumbers: true,
-        mode: 'javascript'
+        language: 'javascript'
     }
-    let textareas = $('div.container textarea')
 
-    console.log(textareas, textareas[0].value, textareas[1].value)
+    console.log($, $('div.container > div:first-child, div.container > div:last-child'), getCurrentInstance())
 
-    console.log(getCurrentInstance())
-
-    a = fromTextArea(textareas[0], options)
-    b = fromTextArea(textareas[1], options)
+    a = monaco.editor.create($('div.container > div:first-child').get(0), options)
+    b = monaco.editor.create($('div.container > div:last-child')[0], options)
 })
 </script>
 
 <template>
     <div class="container">
-        <div><textarea></textarea></div>
+        <div></div>
         <div><button @click="click">transform</button></div>
-        <div><textarea></textarea></div>
+        <div></div>
     </div>
 </template>
-
-<style>
-    .CodeMirror {
-        width: 100%;
-        height: 100%;
-        border: 1px solid lightgray;
-    }
-</style>
 
 <style scoped>
     .container {
         display: flex;
-        height: 480px;
+        height: 100vh;
     }
-
     .container > div {
-        padding: 10px;
-        text-align: left;
         overflow: hidden;
     }
-
     .container > div:first-child,
     .container > div:last-child {
         flex: 1;
     }
-
     .container > div:nth-child(2) {
-        width: 100px;
+        width: 200px;
         text-align: center;
-    }
-
-    textarea {
-        width: 100%;
-        height: 100%;
+        align-self: center;
     }
 </style>
