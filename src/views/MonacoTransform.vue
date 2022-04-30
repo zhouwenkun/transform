@@ -1,11 +1,14 @@
 <script setup>
-//import $ from 'jquery'
-
-import { ref, onMounted, getCurrentInstance, watch, watchPostEffect, watchSyncEffect } from 'vue'
+import { ref, onMounted, getCurrentInstance, watch } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 
 import { generate } from 'escodegen'
+
+
+import  * as esprima from 'esprima'
 import { parseScript, Syntax } from 'esprima'
+
+//import { _ } from 'lodash'
 
 import * as monaco from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
@@ -34,8 +37,15 @@ self.MonacoEnvironment = {
 
 const { width } = useWindowSize()
 
+console.log('generate:', generate)
+console.log('_:', _)
+
+
+
 let a, b
 const options = { comment: true }
+
+console.log('esprima:', esprima)
 
 const transform = (source) => {
     let ast = parseScript(source, options, (node, metadata) => {
@@ -59,7 +69,8 @@ const transform = (source) => {
         format: {
             semicolons: false
         },
-        comment: true
+        comment: true,
+        comments: true
     })
 }
 
@@ -81,8 +92,12 @@ onMounted(() => {
     b = monaco.editor.create($('div.container > div:last-child')[0], options)
 })
 
+console.log(width.value)
+
 watch(width, () => {
     console.log('width:', width.value)
+    //[a, b].map(e => e.layout())
+    //[a, b].forEach(e => e.layout())
     a.layout()
     b.layout()
 })

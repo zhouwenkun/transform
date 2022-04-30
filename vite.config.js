@@ -7,7 +7,8 @@ export default defineConfig({
   plugins: [
     vue(),
     inject({
-       $: 'jquery'
+       $: 'jquery',
+       _: 'lodash'
     })
   ]
 })
