@@ -3,12 +3,9 @@ import { ref, onMounted, getCurrentInstance, watch } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 
 import { generate } from 'escodegen'
-
-
-import  * as esprima from 'esprima'
 import { parseScript, Syntax } from 'esprima'
 
-//import { _ } from 'lodash'
+import { singledatagrid } from '../transformer/SingleDataGrid'
 
 import * as monaco from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
@@ -38,14 +35,11 @@ self.MonacoEnvironment = {
 const { width } = useWindowSize()
 
 console.log('generate:', generate)
-console.log('_:', _)
-
 
 
 let a, b
 const options = { comment: true }
 
-console.log('esprima:', esprima)
 
 const transform = (source) => {
     let ast = parseScript(source, options, (node, metadata) => {
@@ -81,6 +75,8 @@ const click = () => {
 onMounted(() => {
     console.log('onMounted...')
     
+    singledatagrid()
+
     let options = {
         lineNumbers: true,
         language: 'javascript'
@@ -126,7 +122,7 @@ watch(width, () => {
         border: 1px solid lightgray;
     }
     .container > div:nth-child(2) {
-        width: 200px;
+        width: 100px;
         text-align: center;
         align-self: center;
     }
